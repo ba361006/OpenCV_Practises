@@ -1,0 +1,43 @@
+{
+    
+    "python.pythonPath": "D:/Tools/Coding/Python/python.exe",
+    "code-runner.executorMap": {
+        "c": "cd $dir && gcc $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt"
+    },
+    "files.associations": {
+        "iostream": "cpp",
+        "*.tcc": "cpp",
+        "random": "cpp",
+        "functional": "cpp",
+        "type_traits": "cpp",
+        "array": "cpp",
+        "atomic": "cpp",
+        "vector": "cpp",
+        "memory_resource": "cpp",
+        "optional": "cpp",
+        "string_view": "cpp",
+        "fstream": "cpp",
+        "memory": "cpp",
+        "stdexcept": "cpp",
+        "system_error": "cpp",
+        "tuple": "cpp",
+        "utility": "cpp",
+        "cstddef": "cpp",
+        "cstdio": "cpp",
+        "cstring": "cpp",
+        "cwchar": "cpp",
+        "initializer_list": "cpp",
+        "new": "cpp",
+        "string": "cpp",
+        "typeinfo": "cpp"
+    },
+    // Ignore the red line under cv2. This problem is due to cv2 can't be recognized by pylint,so to solve this probelm, we add cv2 to whitelist.
+    "python.linting.pylintArgs": [
+        "--extension--pkg-whitelist=cv2"
+    ],
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true,
+    "terminal.integrated.shell.windows": "C:/Windows/system32/cmd.exe",
+    "git.ignoreLimitWarning": true,
+    // "terminal.integrated.windowsEnableConpty": false
+}
