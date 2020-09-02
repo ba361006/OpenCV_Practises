@@ -1,6 +1,5 @@
 import cv2
 import numpy as np 
-import Tools
 
 # input image
 image_ori = cv2.imread("./Image/Scratch.png")
@@ -16,7 +15,7 @@ Sobel = cv2.addWeighted(absx, 0.5, absy, 0.5, 0)
 Sobel = cv2.normalize(Sobel, None, 0, 255, cv2.NORM_MINMAX)
 
 # morphologizing 
-thresh_bin, _ = Tools.Threshold(Sobel, 72, 255)
+thresh_bin, _ = tools.Threshold(Sobel, 72, 255)
 kernel = np.ones([3,3], dtype = np.int)
 closing = cv2.morphologyEx(thresh_bin, cv2.MORPH_CLOSE, kernel)
 

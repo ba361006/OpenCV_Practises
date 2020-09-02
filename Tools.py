@@ -1,158 +1,270 @@
+"""
+Function Name: tools
+Description: Collecting some commonly used functions in Image Processing
+Argument: None
+Parameter: None
+Return: None
+Edited by: 2020-08-20 Bill Gao
+"""
 import numpy as np 
 import cv2
-import sys
-import traceback
-
-def nothing(x):
-    pass
 
 
-def Threshold_test(Image_in, BGR = False):
-    if len(Image_in.shape) == 3:
-        if BGR == True:
-            Image_in = cv2.cvtColor(Image_in, cv2.COLOR_BGR2GRAY)
+def thresholdTest(input_image, bgr = False):
+    """
+    Function Name: thresholdTest
+    
+    Description: input an image, and select the upper and lower threshold value
+    
+    Argument: 
+              input_image [np.array] -> input image
+              bgr [bool] -> Convert a bgr image into a greyscale image
+              
+    Parameters: None
+    
+    Return: 
+            
+    Edited by: 2020-08-20 Bill Gao
+    """    
+    if len(input_image.shape) == 3:
+        if bgr == True:
+            input_image = cv2.cvtColor(input_image, cv2.COLOR_BGR2GRAY)
         else:
-            Image_in = cv2.cvtColor(Image_in, cv2.COLOR_RGB2GRAY)
+            input_image = cv2.cvtColor(input_image, cv2.COLOR_RGB2GRAY)
 
     cv2.namedWindow("Trackbars")
-    cv2.createTrackbar("High", "Trackbars", 255, 255, nothing)
-    cv2.createTrackbar("Low", "Trackbars", 0, 255, nothing)
+    cv2.createTrackbar("upper", "Trackbars", 255, 255, lambda tmp:None)
+    cv2.createTrackbar("lower", "Trackbars", 0, 255, lambda tmp:None)
     while (True):
-        High = cv2.getTrackbarPos("High", "Trackbars")
-        Low = cv2.getTrackbarPos("Low", "Trackbars")
-        Binary_img = cv2.inRange(Image_in, Low, High )
-        Bitwise_img = cv2.bitwise_and(Image_in, Image_in, mask = Binary_img)
-        cv2.imshow("Threshold_test_Out_Binary", Binary_img)
-        cv2.imshow("Threshold_test_Out_Colour", Bitwise_img)
+        upper = cv2.getTrackbarPos("upper", "Trackbars")
+        lower = cv2.getTrackbarPos("lower", "Trackbars")
+        binary_image = cv2.inRange(input_image, lower, upper)
+        bitwise_image = cv2.bitwise_and(input_image, input_image, mask = binary_image)
+        cv2.imshow("binary_image", binary_image)
+        cv2.imshow("bitwise_image", bitwise_image)
 
         if cv2.waitKey(1) & 0xFF == ord("w"):
-            print("Low, High = {}, {}\n".format(Low, High))
+            print("lower, upper = {}, {}\n".format(lower, upper))
             break
     cv2.destroyWindow("Trackbars")
-    cv2.destroyWindow("Threshold_test_Out_Binary")
-    cv2.destroyWindow("Threshold_test_Out_Colour")
+    cv2.destroyWindow("binary_image")
+    cv2.destroyWindow("bitwise_image")
 
 
 
-def Threshold(Image_in, Low, High, Show_Image = None, BGR = False):
-    if len(Image_in.shape) == 3:
-        if BGR == True:
-            Image_in = cv2.cvtColor(Image_in, cv2.COLOR_BGR2GRAY)
-        else:
-            Image_in = cv2.cvtColor(Image_in, cv2.COLOR_RGB2GRAY)
-
-    Binary_img = cv2.inRange(Image_in, Low, High)
-    Bitwise_img = cv2.bitwise_and(Image_in, Image_in, mask = Binary_img)
+def threshold(input_image, lower, upper, show_image = None, bgr = False):
+    """
+    Function Name: threshold
     
-    if Show_Image:
-        cv2.imshow("Threshold_Out_Binary", Binary_img)
-        cv2.imshow("Threshold_Out_Colour", Bitwise_img)
+    Description: Convert the input image into a hsv image, and turn pixels whose intensity are between
+                 the given lower and upper threshold value into white, and turn the other into black.
+    
+    Argument: 
+              input_image [np.array] -> Input Image
+              lower [int] -> lower threshold value 
+              upper [int] -> upper threshold value 
+              show_image [bool] -> Show Result
+              bgr [bool] -> Convert a bgr image into a greyscale image
+              
+    Parameters: None
+    
+    Return: 
+            [np.array] -> Binary image
+            [np.array] -> Colour image
+           
+    Edited by: 2020-08-20 Bill Gao
+    """
+    if len(input_image.shape) == 3:
+        if bgr == True:
+            input_image = cv2.cvtColor(input_image, cv2.COLOR_BGR2GRAY)
+        else:
+            input_image = cv2.cvtColor(input_image, cv2.COLOR_RGB2GRAY)
+
+    binary_image = cv2.inRange(input_image, lower, upper)
+    bitwise_image = cv2.bitwise_and(input_image, input_image, mask = binary_image)
+    
+    if show_image:
+        cv2.imshow("threshold_out_binary", binary_image)
+        cv2.imshow("threshold_out_colour", bitwise_image)
         cv2.waitKey(0)
-        cv2.destroyWindow("Threshold_Out_Binary")
-        cv2.destroyWindow("Threshold_Out_Colour")
-    return Binary_img, Bitwise_img
+        cv2.destroyWindow("threshold_out_binary")
+        cv2.destroyWindow("threshold_out_colour")
+    return binary_image, bitwise_image
 
 
 
-def Hsv_test(Image_in, BGR = False):
-    if BGR == True:
-        img_hsv = cv2.cvtColor(Image_in, cv2.COLOR_BGR2HSV)
+def hsvTest(input_image, bgr = False):
+    """
+    Function Name: hsvTest
+    
+    Description: input an image, and select the upper and lower threshold value of HSV
+                 
+    
+    Argument: 
+              input_image [np.array] -> input image
+              bgr [bool] -> Convert a bgr image into a greyscale image
+    Parameters: None
+    
+    Return: 
+            
+    Edited by: 2020-08-20 Bill Gao
+    """    
+    if bgr == True:
+        img_hsv = cv2.cvtColor(input_image, cv2.COLOR_bgr2HSV)
     else:
-        img_hsv = cv2.cvtColor(Image_in, cv2.COLOR_RGB2HSV)
+        img_hsv = cv2.cvtColor(input_image, cv2.COLOR_RGB2HSV)
 
     cv2.namedWindow("Trackbars")
-    cv2.createTrackbar("High_H", "Trackbars", 180, 180, nothing)
-    cv2.createTrackbar("High_S", "Trackbars", 255, 255, nothing)
-    cv2.createTrackbar("High_V", "Trackbars", 255, 255, nothing)
-    cv2.createTrackbar("Low_H", "Trackbars", 0, 180, nothing)
-    cv2.createTrackbar("Low_S", "Trackbars", 0, 255, nothing)
-    cv2.createTrackbar("Low_V", "Trackbars", 0, 255, nothing)
+    cv2.createTrackbar("upper_H", "Trackbars", 180, 180, lambda tmp:None)
+    cv2.createTrackbar("upper_S", "Trackbars", 255, 255, lambda tmp:None)
+    cv2.createTrackbar("upper_V", "Trackbars", 255, 255, lambda tmp:None)
+    cv2.createTrackbar("lower_H", "Trackbars", 0, 180, lambda tmp:None)
+    cv2.createTrackbar("lower_S", "Trackbars", 0, 255, lambda tmp:None)
+    cv2.createTrackbar("lower_V", "Trackbars", 0, 255, lambda tmp:None)
     print("Press 'w' to end the while loop")
-    while (True):
-        High_H = cv2.getTrackbarPos("High_H", "Trackbars")
-        High_S = cv2.getTrackbarPos("High_S", "Trackbars")
-        High_V = cv2.getTrackbarPos("High_V", "Trackbars")
-        Low_H = cv2.getTrackbarPos("Low_H", "Trackbars")
-        Low_S = cv2.getTrackbarPos("Low_S", "Trackbars")
-        Low_V = cv2.getTrackbarPos("Low_V", "Trackbars")
 
-        Low = np.array([Low_H, Low_S, Low_V], dtype = np.uint8)
-        High = np.array([High_H, High_S, High_V], dtype = np.uint8) 
-        Binary_img = cv2.inRange(img_hsv,Low ,High )
-        Bitwise_img = cv2.bitwise_and(Image_in, Image_in, mask = Binary_img)
-        cv2.imshow("Hsv_test_threshold", Binary_img)
-        cv2.imshow("Hsv_test_bitwise", Bitwise_img)
+    while (True):
+        upper_H = cv2.getTrackbarPos("upper_H", "Trackbars")
+        upper_S = cv2.getTrackbarPos("upper_S", "Trackbars")
+        upper_V = cv2.getTrackbarPos("upper_V", "Trackbars")
+        lower_H = cv2.getTrackbarPos("lower_H", "Trackbars")
+        lower_S = cv2.getTrackbarPos("lower_S", "Trackbars")
+        lower_V = cv2.getTrackbarPos("lower_V", "Trackbars")
+
+        lower = np.array([lower_H, lower_S, lower_V], dtype = np.uint8)
+        upper = np.array([upper_H, upper_S, upper_V], dtype = np.uint8) 
+        binary_image = cv2.inRange(img_hsv,lower ,upper )
+        bitwise_image = cv2.bitwise_and(input_image, input_image, mask = binary_image)
+        cv2.imshow("binary_image", binary_image)
+        cv2.imshow("bitwise_image", bitwise_image)
 
         if cv2.waitKey(1) & 0xFF == ord("w"):
-            print("Low, High = [{},{},{}], [{},{},{}]\n".format(Low[0], Low[1], Low[2], High[0], High[1], High[2]))
+            print("lower, upper = [{},{},{}], [{},{},{}]\n".format(lower[0],
+                                                                   lower[1],
+                                                                   lower[2],
+                                                                   upper[0],
+                                                                   upper[1],
+                                                                   upper[2]))
             break
-    cv2.destroyWindow("Hsv_test_Out")
-    cv2.destroyWindow("Hsc_test_biwsie")
+    cv2.destroyWindow("binary_image")
+    cv2.destroyWindow("bitwise_image")
     cv2.destroyWindow("Trackbars")
 
 
 
-def Hsv(Image_in, Low, High, Show_Image = None, BGR = False):
-    if BGR == True:
-        img_hsv = cv2.cvtColor(Image_in, cv2.COLOR_BGR2HSV)
-        Low = np.array(Low, dtype = np.uint8)
-        High = np.array(High, dtype = np.uint8)
+def hsv(input_image, lower, upper, show_image = None, bgr = False):
+    """
+    Function Name: hsv
+    
+    Description: Convert the input image into a hsv image, and turn pixels whose intensity are between
+                 the given lower and upper threshold value into white, and turn the other into black.
+    
+    Argument: 
+              input_image [np.array] -> Input Image
+              lower [list] -> lower threshold value
+              upper [list] -> upper threshold value
+              show_image [bool] -> Show Result
+              bgr [bool] -> Convert a bgr image into a hsv image
+              
+    Parameters: None
+    
+    Return: 
+            [np.array] -> Binary image
+            [np.array] -> Colour image
+           
+    Edited by: 2020-08-20 Bill Gao
+    """    
+    if bgr == True:
+        hsv_image = cv2.cvtColor(input_image, cv2.COLOR_bgr2HSV)
+        lower = np.array(lower, dtype = np.uint8)
+        upper = np.array(upper, dtype = np.uint8)
     else:
-        img_hsv = cv2.cvtColor(Image_in, cv2.COLOR_RGB2HSV)
-        Low = np.array(Low, dtype = np.uint8)
-        High = np.array(High, dtype = np.uint8)
+        hsv_image = cv2.cvtColor(input_image, cv2.COLOR_RGB2HSV)
+        lower = np.array(lower, dtype = np.uint8)
+        upper = np.array(upper, dtype = np.uint8)
 
     
-    Binary_img = cv2.inRange(img_hsv, Low, High)
-    Bitwise_img = cv2.bitwise_and(Image_in, Image_in, mask = Binary_img)
+    binary_image = cv2.inRange(hsv_image, lower, upper)
+    bitwise_image = cv2.bitwise_and(input_image, input_image, mask = binary_image)
 
-    if Show_Image:
-        cv2.imshow("Hsv_bin", Binary_img)
-        cv2.imshow("Hsv_Colour", Bitwise_img)
+    if show_image:
+        cv2.imshow("binary_image", binary_image)
+        cv2.imshow("bitwise_image", bitwise_image)
         cv2.waitKey(0)
-        cv2.destroyWindow("Hsv_bin")
-        cv2.destroyWindow("Hsv_Colour")
-    return Binary_img, Bitwise_img
+        cv2.destroyWindow("binary_image")
+        cv2.destroyWindow("bitwise_image")
+    return binary_image, bitwise_image
         
 
-def Canny_test(Image_in, BGR = False):
-    # if BGR == True:
-    #     Image_in = cv2.cvtColor(Image_in, cv2.COLOR_BGR2GRAY)
-    # else:
-    #     Image_in = cv2.cvtColor(Image_in, cv2.COLOR_RGB2GRAY)
+def cannyTest(input_image, bgr = False):
+    """
+    Function Name: cannyTest
+    
+    Description: input an image, and select the upper and lower threshold value of canny edge detection 
+    
+    Argument: 
+              input_image [np.array] -> input image
+              bgr [bool] -> Convert a bgr image into a greyscale image
+              
+    Parameters: None
+    
+    Return: 
+            
+    Edited by: 2020-08-20 Bill Gao
+    """    
+    if bgr == True:
+        input_image = cv2.cvtColor(input_image, cv2.COLOR_BGR2GRAY)
+    else:
+        input_image = cv2.cvtColor(input_image, cv2.COLOR_RGB2GRAY)
 
 
-    blurred = cv2.GaussianBlur(Image_in, (3,3), 0)
+    blurred = cv2.GaussianBlur(input_image, (3,3), 0)
     cv2.namedWindow("Trackbars")
-    cv2.createTrackbar("High", "Trackbars", 0, 255, nothing)
-    cv2.createTrackbar("Low", "Trackbars", 0, 255, nothing)
+    cv2.createTrackbar("upper", "Trackbars", 0, 255, lambda tmp:None)
+    cv2.createTrackbar("lower", "Trackbars", 0, 255, lambda tmp:None)
     print("\n Press 'w' to end the while loop")
     while (True):
-        High = cv2.getTrackbarPos("High", "Trackbars")
-        Low = cv2.getTrackbarPos("Low", "Trackbars")
-        canny = cv2.Canny(Image_in , Low, High)
-        cv2.imshow("Canny_test_Out", canny)
+        upper = cv2.getTrackbarPos("upper", "Trackbars")
+        lower = cv2.getTrackbarPos("lower", "Trackbars")
+        canny_image = cv2.Canny(input_image , lower, upper)
+        cv2.imshow("canny_image", canny_image)
 
         if cv2.waitKey(1) & 0xFF == ord("w"):
-            print("[Low, High] = [{},{}]".format(Low, High))
+            print("[lower, upper] = [{},{}]".format(lower, upper))
             break
-    cv2.destroyWindow("Canny_test_Out")
+    cv2.destroyWindow("canny_image")
 
 
-def Canny(Image_in, BGR = False):
-    if BGR == True:
-        Image_in = cv2.cvtColor(Image_in, cv2.COLOR_BGR2GRAY)
+def Canny(input_image,lower = 0, upper = 255, bgr = False):
+    """
+    Function Name: Canny
+    
+    Description: input lower and upper threshold value to apply canny edge detection
+    
+    Argument: 
+              input_image [type] -> [description]
+              bgr [bool] -> Convert a bgr image into a greyscale image
+              
+    Parameters: None
+    
+    Return: 
+            [np.arrary] -> canny edge image
+           
+    Edited by: 2020-08-20 Bill Gao
+    """    
+    if bgr == True:
+        input_image = cv2.cvtColor(input_image, cv2.COLOR_BGR2GRAY)
     else:
-        Image_in = cv2.cvtColor(Image_in, cv2.COLOR_RGB2GRAY)
-    blurred = cv2.GaussianBlur(Image_in, (3,3), 0)
-    canny = cv2.Canny(blurred,0, 255)
-    return canny
+        input_image = cv2.cvtColor(input_image, cv2.COLOR_RGB2GRAY)
+    blurred = cv2.GaussianBlur(input_image, (3,3), 0)
+    canny_image = cv2.Canny(blurred, lower, upper)
+    return canny_image
 
 
 # Image_extracting Parameters
 mouse_row_0, mouse_col_0, mouse_row_1, mouse_col_1, mouse_count = 0, 0, 0, 0, 0
 
-def mouseaction(event, x, y, flags, param):
+def mouseAction(event, x, y, flags, param):
     global mouse_row_0, mouse_col_0, mouse_row_1, mouse_col_1, mouse_count
     if event == cv2.EVENT_LBUTTONDOWN:
         print("Left button down")
@@ -163,16 +275,16 @@ def mouseaction(event, x, y, flags, param):
             mouse_col_1, mouse_row_1 = x, y
             mouse_count = 0
         
-def Image_extracting(Image_in, return_image = True):
+def Image_extracting(input_image, return_image = True):
     global mouse_row_0, mouse_col_0, mouse_row_1, mouse_col_1, mouse_count
     
     cv2.namedWindow("Image_extracting")
 
-    cv2.imshow("Image_extracting", Image_in)
-    cv2.setMouseCallback("Image_extracting", mouseaction)
+    cv2.imshow("Image_extracting", input_image)
+    cv2.setMouseCallback("Image_extracting", mouseAction)
     cv2.waitKey(0)
     
-    extract_img = Image_in[mouse_row_0: mouse_row_1, mouse_col_0:mouse_col_1]
+    extract_img = input_image[mouse_row_0: mouse_row_1, mouse_col_0:mouse_col_1]
     cv2.imshow("extract", extract_img)
     cv2.waitKey(0)
     cv2.destroyWindow("extract")
@@ -182,25 +294,41 @@ def Image_extracting(Image_in, return_image = True):
 
 
 
-def Sliding_Window(Image_in, kernel):
-    img_row, img_col, img_channel = Image_in.shape
+def slidingWindow(input_image, kernel):
+    """
+    Function Name: slidingWindow
+    
+    Description: Apply the sliding window method without using opencv
+    
+    Argument: 
+              input_image [np.array] -> input image
+              kernel [np.array] -> kernel for applying the sliding window method
+              
+    Parameters: None
+    
+    Return: 
+            [np.array] -> processed image
+           
+    Edited by: 2020-08-20 Bill Gao
+    """    
+    row_image, col_image, channel_image = input_image.shape
     k_row, k_col = kernel.shape
 
-    feature_row = img_row - k_row + 1
-    feature_col = img_col - k_col + 1
-    feature = np.lib.stride_tricks.as_strided(Image_in,
+    feature_row = row_image - k_row + 1
+    feature_col = col_image - k_col + 1
+    feature = np.lib.stride_tricks.as_strided(input_image,
                                               shape = (1, 
-                                                       img_channel, 
+                                                       channel_image, 
                                                        feature_row, 
                                                        feature_col, 
                                                        k_row, 
                                                        k_col),
                                               strides = (1, 
                                                          1, 
-                                                         img_channel*img_col, 
-                                                         img_channel*1, 
-                                                         img_channel*img_col, 
-                                                         img_channel*1))
+                                                         channel_image*col_image, 
+                                                         channel_image*1, 
+                                                         channel_image*col_image, 
+                                                         channel_image*1))
 
     feature = feature.reshape(feature_row*feature_col*3, k_row, k_col)
     feature_map = np.uint8(np.tensordot(kernel, feature, [(0,1), (1,2)]))
@@ -208,17 +336,31 @@ def Sliding_Window(Image_in, kernel):
     Processed_image = np.lib.stride_tricks.as_strided(feature_map,
                                                       shape = (feature_row,
                                                                feature_col,
-                                                               img_channel),
+                                                               channel_image),
                                                       strides = (feature_col,
                                                                  1,
                                                                  feature_row * feature_col))
 
     return Processed_image
 
-def Focus_test(Port):
+def cameraFocusTest(Port):
+    """
+    Function Name: cameraFocusTest
+    
+    Description: Adjust the foucs of camera
+    
+    Argument: 
+              Port [type] -> [description]
+              
+    Parameters: None
+    
+    Return: None
+            
+    Edited by: 2020-08-20 Bill Gao
+    """    
     cv2.namedWindow('Trackbar')
-    cv2.createTrackbar('focus','Trackbar',0,255,nothing)
-    cap= cv2.VideoCapture(Port,cv2.CAP_DSHOW)
+    cv2.createTrackbar('focus','Trackbar',0,255,lambda tmp:None)
+    cap = cv2.VideoCapture(Port,cv2.CAP_DSHOW)
 
     focus = 0 # min: 0, max: 255, increment:5
     cap.set(cv2.CAP_PROP_AUTOFOCUS, 1)
@@ -233,29 +375,38 @@ def Focus_test(Port):
             cv2.destroyAllWindows()  
             break
 
-def Find_Vertex(data_in):
+def findVertex(input_data, row_col = True):
+    """
+    Function Name: findVertex
     
-    Left_x = np.argsort(data_in[:,0])[0:2]
-    Right_x = np.argsort(data_in[:,0])[2:4]
-
-    Upper_Left = data_in[Left_x][np.argmin(data_in[Left_x][:,1])]
-    Upper_Right = data_in[Left_x][np.argmax(data_in[Left_x][:,1])]
-    Lower_Left = data_in[Right_x][np.argmin(data_in[Right_x][:,1])]
-    Lower_Right = data_in[Right_x][np.argmax(data_in[Right_x][:,1])]
-
+    Description: Find the vertices of the input_data, return value will be [x, y] instead of [rows, cols]
     
-    return Upper_Left, Upper_Right, Lower_Right, Lower_Left
+    Argument: 
+              input_data [np.array] -> input data
+              
+    Parameters: None
+    
+    Return: 
+            [np.array] -> coordinate of upper_left
+            [np.array] -> coordinate of upper_right
+            [np.array] -> coordinate of lower_right
+            [np.array] -> coordinate of lower_left
+           
+    Edited by: 2020-08-20 Bill Gao
+    """    
+    Left_x  = np.argsort(input_data[:,0])[0:2]
+    Right_x = np.argsort(input_data[:,0])[2:4]
+
+    if row_col:
+        upper_left  = input_data[Left_x][np.argmin(input_data[Left_x][:,1])]
+        upper_right = input_data[Left_x][np.argmax(input_data[Left_x][:,1])]
+        lower_left  = input_data[Right_x][np.argmin(input_data[Right_x][:,1])]
+        lower_right = input_data[Right_x][np.argmax(input_data[Right_x][:,1])]
+    else:
+        upper_left  = input_data[Left_x][np.argmin(input_data[Left_x][:,1])]
+        upper_right = input_data[Left_x][np.argmax(input_data[Left_x][:,1])]
+        lower_left  = input_data[Right_x][np.argmin(input_data[Right_x][:,1])]
+        lower_right = input_data[Right_x][np.argmax(input_data[Right_x][:,1])]
 
 
-def Error_message(Error):
-    error_class = Error.__class__.__name__ #取得錯誤類型
-    detail = Error.args[0] #取得詳細內容
-    cl, exc, tb = sys.exc_info() #取得Call Stack
-    lastCallStack = traceback.extract_tb(tb)[-1] #取得Call Stack的最後一筆資料
-    fileName = lastCallStack[0] #取得發生的檔案名稱
-    lineNum = lastCallStack[1] #取得發生的行號
-    funcName = lastCallStack[2] #取得發生的函數名稱
-    errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
-    print("\n======================== Error Message ========================")
-    print(errMsg)
-    print("======================== Error Message ========================\n")
+    return upper_left, upper_right, lower_right, lower_left

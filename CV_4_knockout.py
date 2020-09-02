@@ -1,8 +1,8 @@
 import cv2
 import numpy as np 
 
-img1  = cv2.imread('./OpenCV/Image/lena.png', cv2.IMREAD_COLOR)
-img2 = cv2.imread('./OpenCV/Image/python.png', cv2.IMREAD_COLOR)
+img1  = cv2.imread('./Image/lena.png', cv2.IMREAD_COLOR)
+img2 = cv2.imread('./Image/python.png', cv2.IMREAD_COLOR)
 cv2.imshow('Ori_lena',img1)
 cv2.imshow('Ori_python', img2)
 
