@@ -1,5 +1,6 @@
 import cv2
 import numpy as np 
+import tools
 
 # input image
 image_ori = cv2.imread("./Image/Scratch.png")

@@ -1,9 +1,10 @@
 import cv2
 import numpy as np
 import os 
+import tools
 
 
-image = cv2.imread('./Image/lena.png',0)
+
 
 def otsu(input_image):
     """
@@ -87,6 +88,29 @@ def valley_emphasis(input_image):
     # otsu
     otsu_value = otsu(input_image)
     print("otsu: {}, valley: {}".format(otsu_value, valley))
+    return valley
     
 
-valley_emphasis(image)
+
+for i in range(18):
+    name = "connected_" + str(i) + ".jpg"
+    image = cv2.imread("./Image/ocr/connected/" + name, 0)
+
+    _, image_otsu = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+    print("cv2.THRESH_OTSU: ", cv2.THRESH_OTSU)
+
+    binary_image, colour_image = tools.threshold(image, 0, otsu(image))
+
+    # ot = otsu(image)
+    # _, my_otsu = cv2.threshold(image, 0, ot, cv2.THRESH_BINARY_INV)
+
+    # val = valley_emphasis(image)
+    # _, valley = cv2.threshold(image, 0 , val, cv2.THRESH_BINARY_INV)
+
+    cv2.imshow("image", image)
+    cv2.imshow("image_otsu", image_otsu)
+    cv2.imshow("binary_image", binary_image)
+    # cv2.imshow("my_otsu", my_otsu)
+    # cv2.imshow("valley_emphasis", valley)
+    cv2.waitKey()
+    cv2.destroyAllWindows()
