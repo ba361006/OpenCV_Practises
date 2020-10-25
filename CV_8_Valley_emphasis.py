@@ -133,30 +133,21 @@ def valley_emphasis(input_image):
 
     # otsu
     otsu_value = otsu(input_image)
-    print("otsu: {}, valley: {}".format(otsu_value, valley))
+    # print("otsu: {}, valley: {}".format(otsu_value, valley))
+
     return valley
-    
 
 
-for i in range(18):
-    name = "connected_" + str(i) + ".jpg"
-    image = cv2.imread("./Image/ocr/connected/" + name, 0)
-
-    _, image_otsu = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
-    print("cv2.THRESH_OTSU: ", cv2.THRESH_OTSU)
-
-    binary_image, colour_image = tools.threshold(image, 0, otsu(image))
-
-    # ot = otsu(image)
-    # _, my_otsu = cv2.threshold(image, 0, ot, cv2.THRESH_BINARY_INV)
-
-    # val = valley_emphasis(image)
-    # _, valley = cv2.threshold(image, 0 , val, cv2.THRESH_BINARY_INV)
-
-    cv2.imshow("image", image)
-    cv2.imshow("image_otsu", image_otsu)
-    cv2.imshow("binary_image", binary_image)
-    # cv2.imshow("my_otsu", my_otsu)
-    # cv2.imshow("valley_emphasis", valley)
+for file_name in os.listdir("./Image/"):
+    name = "./Image/" + file_name
+    image = cv2.imread(name,0)
+    thresh_valley = valley_emphasis(image)
+    thresh_otsu = v_otsu(image)
+    print("\n================ Final Threshold value ================")
+    print("\nOtus: {}, valley: {}".format(thresh_otsu, thresh_valley))
+    otsu_bin, otsu_colour = tools.threshold(image,0,thresh_otsu)
+    valley_bin, valley_colour = tools.threshold(image,0,thresh_valley)
+    cv2.imshow("otsu_bin", otsu_bin)
+    cv2.imshow("valley_bin", valley_bin)
     cv2.waitKey()
     cv2.destroyAllWindows()

@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 import time
 
 
-Image =  cv2.imread("./OpenCV/Image/water_coins.jpg")
+Image =  cv2.imread("./Image/water_coins.jpg")
 Image_grey = cv2.cvtColor(Image, cv2.COLOR_RGB2GRAY)
 _, Threshold = cv2.threshold(Image_grey, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
 # cv2.imshow("Threshold", Threshold)

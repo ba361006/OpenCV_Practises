@@ -1,10 +1,6 @@
 {
     
-<<<<<<< HEAD
     "python.pythonPath": "D:\\Tools\\Coding\\Python\\python.exe",
-=======
-    "python.pythonPath": "D:\\Coding\\Python\\python.exe",
->>>>>>> 958a1dd5ad8ebac969d2e34267ff0e2c6aa07be6
     "code-runner.executorMap": {
         "c": "cd $dir && gcc $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt"
     },
