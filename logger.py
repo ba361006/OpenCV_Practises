@@ -206,45 +206,45 @@ class Log:
         """        
         # verify the content of record_level
         log_level = self.__levelCheck(log_level)
+        if log_level >= self.__stream_default_level or log_level >= self.__record_default_level:
+            # ger the name of input log_level
+            error_dict = {"DEBUG": 10, "INFO": 20, "WARNING": 30, "ERROR": 40, "CRITICAL": 50}
+            for key, value in error_dict.items():
+                if value == log_level:
+                    self.__except_level_name = key
+            logging.addLevelName(self.__record_only_level, self.__except_level_name)
 
-        # ger the name of input log_level
-        error_dict = {"DEBUG": 10, "INFO": 20, "WARNING": 30, "ERROR": 40, "CRITICAL": 50}
-        for key, value in error_dict.items():
-            if value == log_level:
-                self.__except_level_name = key
-        logging.addLevelName(self.__record_only_level, self.__except_level_name)
-
-        # if error_input is only a set of str
-        if error_input.__class__ == str:
-            extra_message = {"level_name": self.__except_level_name,
-                             "error_file": inspect.stack()[1][1].split("\\")[-1].split(".")[0],
-                             "error_func": inspect.stack()[1][3]}
-            error_message = error_input
-        else:
-            # get error message and type
-            detail = error_input.args[0] if any(error_input.args) == True else "Error message is empty"
-            error_type = error_input.__class__.__name__
-            cl, exc, tb = sys.exc_info()
-            last_call_stack = traceback.extract_tb(tb)[-1]
-            error_file = last_call_stack[0]
-            line_num = last_call_stack[1]
-            error_func = last_call_stack[2]
-            extra_message = {"level_name": self.__except_level_name,
-                             "error_file": error_file.split("\\")[-1].split(".")[0],
-                             "error_func": error_func}
-            error_message = "File \"{}\", line {}, in {}: [{}] {}".format(error_file, line_num, error_func, error_type, detail)
+            # if error_input is only a set of str
+            if error_input.__class__ == str:
+                extra_message = {"level_name": self.__except_level_name,
+                                "error_file": inspect.stack()[1][1].split("\\")[-1].split(".")[0],
+                                "error_func": inspect.stack()[1][3]}
+                error_message = error_input
+            else:
+                # get error message and type
+                detail = error_input.args[0] if any(error_input.args) == True else "Error message is empty"
+                error_type = error_input.__class__.__name__
+                cl, exc, tb = sys.exc_info()
+                last_call_stack = traceback.extract_tb(tb)[-1]
+                error_file = last_call_stack[0]
+                line_num = last_call_stack[1]
+                error_func = last_call_stack[2]
+                extra_message = {"level_name": self.__except_level_name,
+                                "error_file": error_file.split("\\")[-1].split(".")[0],
+                                "error_func": error_func}
+                error_message = "File \"{}\", line {}, in {}: [{}] {}".format(error_file, line_num, error_func, error_type, detail)
 
 
-        # show the original error_message and record the revised error_message in .csv file which replaces "," with "-" 
-        # to keep the "open file in editor" function in VS Code, also let it suit the format of .csv file
-        if error_message.find(","):
-            revised_message = error_message.replace(",", " -")
-            if log_level >= self.__stream_default_level:
-                self.__logger.log(self.__stream_only_level, error_message, extra=extra_message)
-            if log_level >= self.__record_default_level and self.__record_path_set:
-                self.__logger.log(self.__record_only_level, revised_message, extra=extra_message)
-        else:
-            if log_level >= self.__stream_default_level:
-                self.__logger.log(self.__stream_only_level, error_message, extra=extra_message)
-            if log_level >= self.__record_default_level and self.__record_path_set:
-                self.__logger.log(self.__record_only_level, error_message, extra=extra_message)
+            # show the original error_message and record the revised error_message in .csv file which replaces "," with "-" 
+            # to keep the "open file in editor" function in VS Code, also let it suit the format of .csv file
+            if error_message.find(","):
+                revised_message = error_message.replace(",", " -")
+                if log_level >= self.__stream_default_level:
+                    self.__logger.log(self.__stream_only_level, error_message, extra=extra_message)
+                if log_level >= self.__record_default_level and self.__record_path_set:
+                    self.__logger.log(self.__record_only_level, revised_message, extra=extra_message)
+            else:
+                if log_level >= self.__stream_default_level:
+                    self.__logger.log(self.__stream_only_level, error_message, extra=extra_message)
+                if log_level >= self.__record_default_level and self.__record_path_set:
+                    self.__logger.log(self.__record_only_level, error_message, extra=extra_message)
