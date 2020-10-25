@@ -26,7 +26,7 @@ from matplotlib import pyplot as plt
 # cv2.destroyAllWindows()
 # cap.release()
 
-dustmite = cv2.imread('./OpenCV/imgs/dustmite3.jpg')
+dustmite = cv2.imread('./Image/dustmite3.jpg')
 hsv = cv2.cvtColor(dustmite, cv2.COLOR_BGR2HSV)
 a = cv2.cvtColor(dustmite,cv2.COLOR_BGR2RGB)
 plt.subplot(3,4,1)
