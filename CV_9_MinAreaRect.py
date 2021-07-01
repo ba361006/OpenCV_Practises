@@ -42,7 +42,7 @@ def rotateAndPutItBack(rotate_angle):
                                    rotate_angle = rotate_angle)
     min_area_rect_rotated = getMinAreaRect(image_in = image_rotated_thirty)
     print(f"\nmin_area_rect of {rotate_angle} degrees rotated image: ", min_area_rect_rotated)
-    cv2.imshow("rotated_30", image_rotated_thirty)
+    cv2.imshow(f"rotated_{rotate_angle}", image_rotated_thirty)
     cv2.waitKey()
 
     # turn the 30 degrees rotated rectangle back
