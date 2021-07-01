@@ -57,5 +57,6 @@ def rotateAndPutItBack(rotate_angle):
 
 if __name__ == "__main__":
     # building this file with opencv-contrib-python == 4.5.2.54
+    # for further information, check README.md -> CV_9_MinAreaRect
     rotateAndPutItBack(rotate_angle = 30)
     rotateAndPutItBack(rotate_angle = -30)
